@@ -1,0 +1,100 @@
+package Sample_Progam;
+
+import java.util.Scanner;
+import java.util.Stack;
+
+public class Stack_Cal {
+
+	public static void main(String[] a) {
+
+		
+		 System.out.println(">>>>SYSTEM PENGHITUNGAN<<<<");
+		 System.out.println("###########################");
+		 System.out.println("|                         |");
+		 System.out.println("| *Contoh = (3*(9-(3+5))) |");
+		 System.out.println("|_________________________|");
+	
+
+		System.out.println("Masukkan Soal : ");
+		Scanner to = new Scanner(System.in);
+		String soal = to.nextLine();
+		Stack<String> data = new Stack<String>();
+		masukStack(soal, data);
+		print(data);
+
+		int n = 100;
+		while (n > 0) {
+			int i = 0;
+			while (i < data.size()) {
+				if (data.elementAt(i).equals(")")) {
+					int[] c = new int[3];  // isi dari element array-nya nanti 3 element meliputi :
+										   //(Batas kurungBuka, ISI/Hasil ,Batas kurungTutup)
+					c = proses(data, i);   
+					newStack(data, c);
+					print(data);
+				}
+			 else {
+					i++;
+				}
+			}
+			n--;
+		}
+	}
+
+	private static void masukStack(String soal, Stack<String> data) {
+		for (int i = 0; i < soal.length(); i++) {
+			data.push(String.valueOf(soal.charAt(i)));
+		}
+	}
+
+	private static int[] proses(Stack<String> data, int e) {
+		int a = 0;                // inisialisasi sebagai nilai tengahnya nanti, sebagai cth hasil dari : 3+5
+		int Buka = 0;             // inisialisasi sebagai indeksi untuk pembatas pembuka kurung
+		int Tutup = e;            // inisialisasi sebagai indeksi untuk pembatas penutup kurung
+		boolean f = true;
+		while (f && e >= 0) {     //Untuk perhitungannya
+			if (data.elementAt(e).contains("(")) {
+				if (data.elementAt(e + 2).equals("*")) {
+					a = (Integer.parseInt(data.elementAt(e + 1)) * Integer
+									.parseInt(data.elementAt(e + 3)));
+					Buka = Buka + e;
+				}
+
+				else if (data.elementAt(e + 2).equals("+")) {
+					a = (Integer.parseInt(data.elementAt(e + 1)) + Integer
+									.parseInt(data.elementAt(e + 3)));
+					Buka = Buka + e;
+				}
+
+				else if (data.elementAt(e + 2).equals("-")) {
+					a =  (Integer.parseInt(data.elementAt(e + 1)) - Integer
+									.parseInt(data.elementAt(e + 3)));
+					Buka = Buka + e;
+				}
+
+				f = false;
+
+			}
+			//e = e - 1;
+			e--;
+		}
+		int[] c = { Buka, Tutup, a };  //didapatkan 3 element dalam array c
+		return c;
+	}
+	
+	private static Stack<String> newStack(Stack<String> data, int[] proses) {
+		for (int y = proses[0]; y <= proses[1]; y++) {
+			data.removeElementAt(proses[0]);
+		}
+		data.add(proses[0], String.valueOf(proses[2]));
+		return data;
+	}
+
+	private static void print(Stack<String> data) {
+		System.out.println("");
+		System.out.print("= ");
+		for (int i = 0; i < data.size(); i++) {
+			System.out.print(data.elementAt(i));
+		}
+	}
+}
